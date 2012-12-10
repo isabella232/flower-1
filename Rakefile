@@ -3,10 +3,19 @@ task :spec do
   RSpec::Core::RakeTask.new
 end
 
+require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'flower'))
+
 task :run do
-  require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'flower'))
   @flower = Flower.new
   @flower.boot!
+end
+
+task :client do
+  require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'em_client'))
+  EventMachine.run {
+    puts "Connecting to #{ARGV[1]}..."
+    EventMachine.connect ARGV[1], 6000, EmClient
+  }
 end
 
 task :console do
