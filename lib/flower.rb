@@ -35,9 +35,9 @@ class Flower
     EM.run {
       get_users rest.get_users
       stream.start
-      EventMachine::start_server("localhost", Flower::Config.em_port, Server)
+      EventMachine::start_server("10.44.35.147", Flower::Config.em_port, Server)
       EM.run {
-        EventMachine.connect("localhost", Flower::Config.em_port, EmClient)
+        EventMachine.connect("10.44.35.147", Flower::Config.em_port, EmClient)
       }
     }
   end
