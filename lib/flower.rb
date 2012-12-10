@@ -10,8 +10,9 @@ class Flower
   require File.expand_path(File.join(File.dirname(__FILE__), 'rest'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'command'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'config'))
-  require File.expand_path(File.join(File.dirname(__FILE__), 'local_server'))
+  require File.expand_path(File.join(File.dirname(__FILE__), 'server'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'stats'))
+  require File.expand_path(File.join(File.dirname(__FILE__), 'em_client'))
 
   COMMANDS = {} # We are going to load available commands in here
   LISTENERS = {} # We are going to load available monitors in here
@@ -34,7 +35,10 @@ class Flower
     EM.run {
       get_users rest.get_users
       stream.start
-      EventMachine::start_server("localhost", Flower::Config.em_port, LocalServer) { |s| s.set_flower(self) }
+      EventMachine::start_server("localhost", Flower::Config.em_port, Server)
+      EM.run {
+        EventMachine.connect("localhost", Flower::Config.em_port, EmClient)
+      }
     }
   end
 
