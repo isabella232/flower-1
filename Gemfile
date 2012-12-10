@@ -4,6 +4,7 @@ gem "rb-appscript", "~> 0.6.1"
 gem 'nokogiri',     "~> 1.5.0"
 
 gem 'em-eventsource'
+gem 'eventmachine', "1.0.0.rc.4"
 
 gem 'yajl-ruby'
 gem 'pry'
