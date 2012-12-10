@@ -95,7 +95,7 @@ class SpotifyCommand < Flower::Command
     self.current_track = track
     Thread.new do
       post_to_dashboard
-      Server.post(track.pointer)
+      Server.post(track.uri)
       play_next
     end
   end
@@ -171,12 +171,13 @@ class SpotifyCommand < Flower::Command
 
   init_session
 
-  class Track < Struct.new(:name, :artist, :album, :pointer, :requester)
+  class Track < Struct.new(:name, :artist, :album, :pointer, :uri, :requester)
     def initialize(track, requester)
       super(track.name,
         track.artist.name,
         track.album,
         track,
+        track.to_link.to_uri,
         requester)
     end
 
