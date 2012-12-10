@@ -21,7 +21,7 @@ class EmClient < EventMachine::Connection
       when "play"
         resume_song
       else
-        play_song!(Hallon::Track.new(msg))
+        play_song!(Hallon::Track.new(msg).load)
       end
     end
   end
