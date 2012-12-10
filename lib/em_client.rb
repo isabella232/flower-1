@@ -11,16 +11,18 @@ class EmClient < EventMachine::Connection
   end
 
   def receive_data(data)
-    puts "want to play #{data.inspect}"
-    case data
-    when /\.(mp3|wav)$/
-      play_file(data)
-    when "pause"
-      pause_song
-    when "play"
-      resume_song
-    else
-      play_song!(data)
+    data.split("\n").reverse.each do |msg|
+      puts "want to play #{msg.inspect}"
+      case msg
+      when /\.(mp3|wav)$/
+        play_file(msg)
+      when "pause"
+        pause_song
+      when "play"
+        resume_song
+      else
+        play_song!(Hallon::Track.new(msg))
+      end
     end
   end
 

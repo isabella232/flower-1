@@ -3,8 +3,7 @@ class Server < EventMachine::Connection
 
   def self.post(data)
     @@clients.each do |client|
-      puts "Going to push: #{data.inspect}"
-      client.send_data(data)
+      client.send_data("#{data}\n")
     end
   end
 
