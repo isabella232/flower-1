@@ -1,8 +1,7 @@
 # encoding: UTF-8
 class SoundCommand < Flower::Command
-
   def self.subclasses
-      ObjectSpace.each_object(Class).select { |klass| klass < self }
+    ObjectSpace.each_object(Class).select { |klass| klass < self }
   end
 
   private
@@ -12,7 +11,7 @@ class SoundCommand < Flower::Command
   end
 
   def self.system_play_file(file_name)
-    system "afplay", File.expand_path(File.join(__FILE__, "..", "..", "..", "extras", file_name))
+    Server.post(file_name)
   end
 
   def self.silenced_at=(t)

@@ -1,22 +1,66 @@
 #!/usr/bin/env ruby
-#
-# client_1
 
 require 'rubygems'
 require 'eventmachine'
+require 'hallon'
+require 'hallon-openal'
 
 class EmClient < EventMachine::Connection
-  def post_init
-    start_input_listener
-  end
-
-  def start_input_listener
-    # send_data "Hello from Richard"
+  def initialize
+    init_session
   end
 
   def receive_data(data)
     puts "want to play #{data.inspect}"
-    path_to_file = File.expand_path(File.join(__FILE__, "..", "..", "extras", data))
-    system "afplay", path_to_file
+    case data
+    when /\.(mp3|wav)$/
+      play_file(data)
+    when "pause"
+      pause_song
+    when "play"
+      resume_song
+    else
+      play_song!(data)
+    end
+  end
+
+  # Hallon
+  # ------------------------------
+  def play_song!(song)
+    player.play!(song)
+  end
+
+  def pause_song
+    player.pause
+  end
+
+  def resume_song
+    player.play
+  end
+
+  private
+
+  def play_file(file_name)
+    system("afplay", File.expand_path(File.join(__FILE__, "..", "..", "extras", file_name)))
+  end
+
+  def init_session
+    @@hallon_session ||= hallon_session!
+  end
+
+  def player
+    @@player ||= Hallon::Player.new(Hallon::OpenAL)
+  end
+
+  def hallon_session!
+    if appkey = IO.read(Flower::Config.spotify_appkey) rescue nil
+      session = Hallon::Session.initialize(appkey)
+      session.login(Flower::Config.spotify_username, Flower::Config.spotify_password)
+      scrobbler = Hallon::Scrobbler.new(:lastfm)
+      scrobbler.credentials = [Flower::Config.lastfm_username, Flower::Config.lastfm_password]
+      scrobbler.enabled = true
+    else
+      puts("Warning: No spotify_appkey.key found. Get yours here: https://developer.spotify.com/technologies/libspotify/#application-keys")
+    end
   end
 end
