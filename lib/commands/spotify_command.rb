@@ -13,6 +13,7 @@ class SpotifyCommand < Flower::Command
     attr_accessor :current_playlist
     attr_accessor :playlist_position
     attr_accessor :playlist_shuffle
+    attr_accessor :default_playlist
   end
 
   def self.respond(command, message, sender, flower)
@@ -40,6 +41,9 @@ class SpotifyCommand < Flower::Command
           set_playlist_shuffle(mode)
         end
         flower.say("Playlist shuffle is #{playlist_shuffle} (set to \"on\" or \"off\")")
+      when 'default'
+        current_playlist = default_playlist
+        flower.paste ["Current playlist", current_playlist.name]
       else
         if playlist = set_playlist(message, sender[:nick])
           self.current_playlist = playlist
@@ -122,6 +126,10 @@ class SpotifyCommand < Flower::Command
       end
       list
     end
+  end
+
+  def self.default_playlist
+    @@default_playlist ||= set_playlist('spotify:user:mynewsdeskdev:playlist:4IOPV1OUlASAeD9C3o08jv', Flower.nick)
   end
 
   def self.get_next_playlist_track
