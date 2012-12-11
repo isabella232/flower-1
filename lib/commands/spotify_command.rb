@@ -79,7 +79,6 @@ class SpotifyCommand < Flower::Command
   end
 
   def self.play_next
-    EmServer.post("pause")
     if track = (QUEUE.shift || get_next_playlist_track)
       play_track(track)
     end
