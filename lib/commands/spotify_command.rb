@@ -1,5 +1,5 @@
 class SpotifyCommand < Flower::Command
-  respond_to "play", "pause", "track", "stam", "search", "queue", "playlist", "album"
+  respond_to "play", "pause", "track", "stam", "search", "queue", "playlist", "album", "add"
   require 'appscript'
   require 'hallon'
   require 'hallon-openal'
@@ -76,6 +76,15 @@ class SpotifyCommand < Flower::Command
         end
       end
       flower.say(get_current_track)
+    when 'add'
+      case message.split(" ").first
+      when nil
+        flower.say("Nothing added to #{default_playlist}")
+      else
+        if track = get_track(message, sender[:nick])
+          default_playlist.insert track
+        end
+      end
     end
   end
 
