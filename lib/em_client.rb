@@ -6,6 +6,11 @@ require 'hallon'
 require 'hallon-openal'
 
 class EmClient < EventMachine::Connection
+
+  def self.start
+    EventMachine.connect(Flower::Config.em_server_ip, Flower::Config.em_server_port, self)
+  end
+
   def initialize
     init_session
   end

@@ -17,7 +17,7 @@ class SpotifyCommand < Flower::Command
   def self.respond(command, message, sender, flower)
     case command
     when "pause"
-      Server.post("pause")
+      EmServer.post("pause")
       flower.say("Stopped playing")
     when "stam"
       flower.say("Stam in da house")
@@ -66,7 +66,7 @@ class SpotifyCommand < Flower::Command
     when "play"
       case message.split(" ").first
       when nil
-        Server.post("play")
+        EmServer.post("play")
       when "next"
         play_next
       else
@@ -79,7 +79,7 @@ class SpotifyCommand < Flower::Command
   end
 
   def self.play_next
-    Server.post("pause")
+    EmServer.post("pause")
     if track = (QUEUE.shift || get_next_playlist_track)
       play_track(track)
     end
@@ -95,7 +95,7 @@ class SpotifyCommand < Flower::Command
     self.current_track = track
     Thread.new do
       post_to_dashboard
-      Server.post(track.uri)
+      EmServer.post(track.uri)
       play_next
     end
   end

@@ -1,5 +1,9 @@
-class Server < EventMachine::Connection
+class EmServer < EventMachine::Connection
   @@clients = []
+
+  def self.start
+    EventMachine::start_server(Flower::Config.em_server_ip, Flower::Config.em_server_port, self)
+  end
 
   def self.post(data)
     @@clients.each do |client|

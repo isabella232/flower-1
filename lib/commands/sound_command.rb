@@ -11,7 +11,7 @@ class SoundCommand < Flower::Command
   end
 
   def self.system_play_file(file_name)
-    Server.post(file_name)
+    EmServer.post(file_name)
   end
 
   def self.silenced_at=(t)

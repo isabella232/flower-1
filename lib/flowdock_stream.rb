@@ -1,6 +1,10 @@
 require "em-eventsource"
-class Flower::Stream
+class Flower::FlowdockStream
   attr_accessor :flower, :api_token, :stream
+
+  def self.start(flower)
+    new(flower).start
+  end
 
   def initialize(flower)
     self.api_token = Flower::Config.api_token

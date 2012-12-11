@@ -6,11 +6,11 @@ require 'em-http'
 require 'yajl'
 
 class Flower
-  require File.expand_path(File.join(File.dirname(__FILE__), 'stream'))
+  require File.expand_path(File.join(File.dirname(__FILE__), 'flowdock_stream'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'rest'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'command'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'config'))
-  require File.expand_path(File.join(File.dirname(__FILE__), 'server'))
+  require File.expand_path(File.join(File.dirname(__FILE__), 'em_server'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'stats'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'em_client'))
 
@@ -26,18 +26,17 @@ class Flower
   def initialize
     self.nick     = Flower::Config.bot_nick
     self.pid      = Process.pid
-    self.stream   = Stream.new(self)
     self.rest     = Rest.new
     self.users    = {}
   end
 
   def boot!
     EM.run {
-      get_users rest.get_users
-      stream.start
-      EventMachine::start_server("10.44.35.147", Flower::Config.em_port, Server)
+      FlowdockStream.start(self)
+      get_users(rest.get_users)
+      EmServer.start
       EM.run {
-        EventMachine.connect("10.44.35.147", Flower::Config.em_port, EmClient)
+        EmClient.start
       }
     }
   end
