@@ -8,6 +8,7 @@ class EmServer < EventMachine::Connection
   def self.post(data)
     @@clients.each do |client|
       client.send_data("#{data}\n")
+      EM.next_tick {}
     end
   end
 
