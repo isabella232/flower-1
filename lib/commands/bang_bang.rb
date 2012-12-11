@@ -2,6 +2,8 @@ class BangBang < Flower::Command
   listen_to /^!(.+)/i
   respond_to "!"
 
+  @@previous = nil
+
   def self.listen(message, sender, flower)
     @@previous = {message: message, sender: sender} unless message =~ /^!!/
   end

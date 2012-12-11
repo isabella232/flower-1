@@ -2,7 +2,6 @@ class SpotifyCommand < Flower::Command
   respond_to "play", "pause", "track", "stam", "search", "queue", "playlist", "album"
   require 'appscript'
   require 'hallon'
-  require 'hallon-openal'
   require 'httparty'
 
   QUEUE = []
@@ -18,7 +17,7 @@ class SpotifyCommand < Flower::Command
   def self.respond(command, message, sender, flower)
     case command
     when "pause"
-      player.pause
+      EmServer.post("pause")
       flower.say("Stopped playing")
     when "stam"
       flower.say("Stam in da house")
@@ -67,7 +66,7 @@ class SpotifyCommand < Flower::Command
     when "play"
       case message.split(" ").first
       when nil
-        player.play
+        EmServer.post("play")
       when "next"
         play_next
       else
@@ -80,7 +79,6 @@ class SpotifyCommand < Flower::Command
   end
 
   def self.play_next
-    player.pause
     if track = (QUEUE.shift || get_next_playlist_track)
       play_track(track)
     end
@@ -96,7 +94,7 @@ class SpotifyCommand < Flower::Command
     self.current_track = track
     Thread.new do
       post_to_dashboard
-      player.play!(track.pointer)
+      EmServer.post(track.uri)
       play_next
     end
   end
@@ -155,18 +153,14 @@ class SpotifyCommand < Flower::Command
     Hallon::Search.new(query).load.tracks
   end
 
-  def self.player
-    @@player ||= Hallon::Player.new(Hallon::OpenAL)
-  end
-
   def self.init_session
-    @@hallon_session ||= hallon_session!
+    hallon_session!
     search("foo") # Do a random search to properly 'init' the Spotify session, and enable the !playlist command.
     self.playlist_shuffle = "off"
   end
 
   def self.hallon_session!
-    if appkey = IO.read(Flower::Config.spotify_appkey) rescue nil
+    if appkey = IO.read("spotify_appkey.key") rescue nil
       session = Hallon::Session.initialize(appkey)
       session.login(Flower::Config.spotify_username, Flower::Config.spotify_password)
       scrobbler = Hallon::Scrobbler.new(:lastfm)
@@ -188,12 +182,13 @@ class SpotifyCommand < Flower::Command
 
   init_session
 
-  class Track < Struct.new(:name, :artist, :album, :pointer, :requester)
+  class Track < Struct.new(:name, :artist, :album, :pointer, :uri, :requester)
     def initialize(track, requester)
       super(track.name,
         track.artist.name,
         track.album,
         track,
+        track.to_link.to_uri,
         requester)
     end
 
