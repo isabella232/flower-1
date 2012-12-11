@@ -12,7 +12,6 @@ class Flower
   require File.expand_path(File.join(File.dirname(__FILE__), 'config'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'em_server'))
   require File.expand_path(File.join(File.dirname(__FILE__), 'stats'))
-  require File.expand_path(File.join(File.dirname(__FILE__), 'em_client'))
 
   COMMANDS = {} # We are going to load available commands in here
   LISTENERS = {} # We are going to load available monitors in here
@@ -35,9 +34,6 @@ class Flower
       FlowdockStream.start(self)
       get_users(rest.get_users)
       EmServer.start
-      EM.run {
-        EmClient.start
-      }
     }
   end
 
