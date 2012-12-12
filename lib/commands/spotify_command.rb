@@ -95,6 +95,7 @@ class SpotifyCommand < Flower::Command
     Thread.new do
       post_to_dashboard
       EmServer.post(track.uri)
+      sleep(track.duration)
       play_next
     end
   end
