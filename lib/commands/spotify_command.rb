@@ -183,13 +183,14 @@ class SpotifyCommand < Flower::Command
 
   init_session
 
-  class Track < Struct.new(:name, :artist, :album, :pointer, :uri, :requester)
+  class Track < Struct.new(:name, :artist, :album, :pointer, :uri, :duration, :requester)
     def initialize(track, requester)
       super(track.name,
         track.artist.name,
         track.album,
         track,
         track.to_link.to_uri,
+        track.duration,
         requester)
     end
 
