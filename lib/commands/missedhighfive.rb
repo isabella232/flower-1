@@ -19,7 +19,7 @@ class MissedHighfive < Flower::Command
   end
 
   def self.image
-    document = Nokogiri.HTML(Typhoeus::Request.get(URL, :follow_location => true).body)
+    document = Nokogiri.HTML(Typhoeus::Request.get(URL, :followlocation => true).body)
     document.at_css(".post img").attribute('src').value
   end
 end
