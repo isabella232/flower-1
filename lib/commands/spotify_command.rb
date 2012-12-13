@@ -30,7 +30,7 @@ class SpotifyCommand < Flower::Command
       case message.split(" ").first
       when nil
         if current_playlist
-          flower.paste ["Current playlist", current_playlist.name]
+          flower.paste ["Current album/playlist", current_playlist.name]
         else
           flower.say "No playlist"
         end
