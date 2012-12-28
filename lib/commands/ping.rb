@@ -34,7 +34,7 @@ class Ping < Flower::Command
     "Command me!",
     "At once",
     "What ails you?",
-    "Yes, my firend?",
+    "Yes, my friend?",
     "Is my aid required?",
     "Do you require my aid?",
     "My powers are ready",
