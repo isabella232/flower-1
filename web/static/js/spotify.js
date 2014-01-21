@@ -50,7 +50,6 @@ define(["jquery","moment"],function($) {
                     queue();
                 });
             });
-
         });
     }
     function player(action){

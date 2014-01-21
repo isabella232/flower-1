@@ -37,6 +37,10 @@ class WebApp < Sinatra::Base
     erb :spotify
   end
 
+  get '/player' do
+    erb :player
+  end
+
   get '/spotify/track' do
     content_type :json
     { track: SpotifyCommand.current_track.try(:pretty) }.to_json
